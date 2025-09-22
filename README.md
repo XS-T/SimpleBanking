@@ -1,1 +1,1 @@
-Simple Stock Market Plugin
+Simple Banking Plugin
