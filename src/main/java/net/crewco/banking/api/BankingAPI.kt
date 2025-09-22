@@ -13,7 +13,7 @@ import java.util.*
 /**
  * Main API class for external plugins to interact with the Banking system
  */
-interface BankingAPI{
+class BankingAPI{
 
 	/**
 	 * Get a player's balance
