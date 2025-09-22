@@ -577,10 +577,41 @@ class DatabaseManager(private val plugin: JavaPlugin) {
 			}
 		)
 	}
+	fun getAccountByNumber(accountNumber: String): BankAccount? {
+		return try {
+			getConnection().use { connection ->
+				// We need to search by the generated account number
+				// Since account numbers are generated from UUID, we need to check all accounts
+				val sql = "SELECT * FROM bank_accounts WHERE is_active = ? OR is_active = 1"
+				connection.prepareStatement(sql).use { stmt ->
+					if (isSQLite()) {
+						stmt.setInt(1, 1)
+					} else {
+						stmt.setBoolean(1, true)
+					}
+					stmt.executeQuery().use { rs ->
+						while (rs.next()) {
+							val account = mapResultSetToAccount(rs)
+							if (account.accountNumber == accountNumber) {
+								return account
+							}
+						}
+						null
+					}
+				}
+			}
+		} catch (e: Exception) {
+			plugin.logger.log(Level.SEVERE, "Failed to get account by number", e)
+			null
+		}
+	}
+
+
 
 	private fun isSQLite(): Boolean {
 		return config.getString("database.type", "sqlite")?.lowercase() == "sqlite"
 	}
+
 	private fun parseTimestamp(timestampString: String?): LocalDateTime {
 		return if (timestampString != null) {
 			try {
@@ -654,4 +685,6 @@ class DatabaseManager(private val plugin: JavaPlugin) {
 			false
 		}
 	}
+
+
 }

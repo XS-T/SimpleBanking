@@ -152,6 +152,64 @@ class BankingAPI{
 		return accountManager.getTotalMoney()
 	}
 
+
+	/**
+	 * Get account balance by account number
+	 * @param accountNumber The account number (format: XXX-XXX-XXX-XXX)
+	 * @return Balance of the account or null if account not found
+	 */
+	fun getAccountBalance(accountNumber: String): BigDecimal? {
+		val account = getAccountByNumber(accountNumber)
+		return account?.balance
+	}
+
+	/**
+	 * Get account by account number
+	 * @param accountNumber The account number (format: XXX-XXX-XXX-XXX)
+	 * @return BankAccount or null if not found
+	 */
+	fun getAccountByNumber(accountNumber: String): BankAccount? {
+		return accountManager.getAccountByNumber(accountNumber)
+	}
+
+	/**
+	 * Check if account exists by account number
+	 * @param accountNumber The account number
+	 * @return true if account exists
+	 */
+	fun hasAccountByNumber(accountNumber: String): Boolean {
+		return getAccountByNumber(accountNumber) != null
+	}
+
+	/**
+	 * Transfer money using account numbers
+	 * @param fromAccountNumber Source account number
+	 * @param toAccountNumber Destination account number
+	 * @param amount Amount to transfer
+	 * @param reason Reason for transfer
+	 * @return true if transfer was successful
+	 */
+	fun transferByAccountNumber(
+		fromAccountNumber: String,
+		toAccountNumber: String,
+		amount: BigDecimal,
+		reason: String = "Account Transfer"
+	): Boolean {
+		if (amount <= BigDecimal.ZERO) return false
+
+		val fromAccount = getAccountByNumber(fromAccountNumber) ?: return false
+		val toAccount = getAccountByNumber(toAccountNumber) ?: return false
+
+		if (fromAccount.balance < amount) return false
+
+		return transactionManager.transferMoney(
+			fromAccount.playerId,
+			toAccount.playerId,
+			amount,
+			reason
+		)
+	}
+
 	/**
 	 * Format currency amount
 	 */

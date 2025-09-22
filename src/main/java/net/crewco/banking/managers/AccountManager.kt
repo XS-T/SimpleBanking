@@ -104,6 +104,14 @@ class AccountManager @Inject constructor(private val plugin:BankingPlugin) {
 		return databaseManager.getTotalMoney()
 	}
 
+
+	/**
+	 * Get account by account number
+	 */
+	fun getAccountByNumber(accountNumber: String): BankAccount? {
+		return databaseManager.getAccountByNumber(accountNumber)
+	}
+
 	/**
 	 * Format currency for display
 	 */
