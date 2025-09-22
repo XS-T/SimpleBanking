@@ -58,9 +58,19 @@ class BankingPlugin : CrewCoPlugin() {
 		// Initialize API
 		api = BankingAPI()
 
-		// Register API service with HIGHEST priority
-		server.servicesManager.register(BankingAPI::class.java, api, this, ServicePriority.Highest)
-
+		// Register Banking API as a service for other plugins
+		try {
+			server.servicesManager.register(
+				BankingAPI::class.java,
+				api,
+				this,
+				ServicePriority.Normal
+			)
+			logger.info("Banking API registered as service successfully!")
+		} catch (e: Exception) {
+			logger.severe("Failed to register Banking API service: ${e.message}")
+			e.printStackTrace()
+		}
 		// Setup Vault economy provider
 		if (!setupVaultEconomy()) {
 			logger.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().name));
