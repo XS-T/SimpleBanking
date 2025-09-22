@@ -1,99 +1,287 @@
-# StockMarket Plugin Configuration
+# ================================
+# Banking Plugin Configuration
+# ================================
 
-# Database settings
+# Database Settings
 database:
-  type: sqlite  # sqlite, mysql, postgresql
+  # Database type: sqlite, mysql, postgresql
+  type: sqlite
+
+  # MySQL/PostgreSQL settings (ignored for SQLite)
   host: localhost
   port: 3306
-  name: stockmarket
+  name: banking
   username: root
-  password: password
+  password: ""
 
-# Economy settings
-economy:
-  starting-balance: 10000.0
+  # Connection pool settings
+  pool-size: 10
+  connection-timeout: 30000
+  leak-detection-threshold: 60000
 
-# Currency display
+# Currency Settings
 currency:
+  # Currency symbol (prefix)
   symbol: "$"
 
-# Trading settings
-trading:
-  fee-percent: 0.1  # 0.1% trading fee
-  minimum-fee: 1.0
+  # Currency suffix (if any)
+  suffix: ""
 
-# Market settings
-market:
-  update-interval: 1200  # Ticks (60 seconds at 20 TPS)
-  fluctuation-interval: 5  # Update every 5 ticks
-  event-chance: 0.02  # 2% chance for market events
-  open-time: "09:00"
-  close-time: "17:00"
-  broadcast-news: true
+  # Currency names
+  singular: "Dollar"
+  plural: "Dollars"
 
-# Default stocks configuration
-default-stocks:
+# Account Settings
+starting-balance: 100.00
+show-balance-on-join: true
+
+# Interest System
+interest:
+  # Enable daily interest payments
   enabled: true
-  stocks:
-    TECH:
-      name: "TechCorp Industries"
-      category: TECHNOLOGY
-      initial-price: 150.00
-      volatility: 0.08
-    BANK:
-      name: "National Bank"
-      category: FINANCE
-      initial-price: 85.50
-      volatility: 0.05
-    HEAL:
-      name: "HealthCare Plus"
-      category: HEALTHCARE
-      initial-price: 220.00
-      volatility: 0.06
-    ENRG:
-      name: "Energy Solutions"
-      category: ENERGY
-      initial-price: 95.00
-      volatility: 0.12
-    SHOP:
-      name: "Consumer Goods Co"
-      category: CONSUMER
-      initial-price: 45.00
-      volatility: 0.07
-    MINE:
-      name: "Mining Corp"
-      category: MATERIALS
-      initial-price: 75.00
-      volatility: 0.10
-    UTIL:
-      name: "Utilities United"
-      category: UTILITIES
-      initial-price: 65.00
-      volatility: 0.04
-    PROP:
-      name: "Real Estate Group"
-      category: REAL_ESTATE
-      initial-price: 125.00
-      volatility: 0.06
 
-# API settings
-api:
-  enabled: true
-  business-integration: true
-  auto-create-business-stocks: true
-  default-business-volatility: 0.03
+  # Daily interest rate (0.01 = 1%)
+  daily-rate: 0.01
 
-# Messages
-messages:
-  market-closed: "§cThe market is currently closed!"
-  insufficient-funds: "§cInsufficient funds!"
-  insufficient-stocks: "§cYou don't own enough stocks!"
-  invalid-quantity: "§cInvalid quantity!"
-  stock-not-found: "§cStock not found!"
-  transaction-success: "§aTransaction completed successfully!"
+  # Minimum balance required to earn interest
+  minimum-balance: 100.00
 
-# Performance settings
+  # Maximum interest payout per day
+  maximum-payout: 1000.00
+
+  # Interest payout interval in hours
+  payout-interval-hours: 24
+
+# Transaction Limits
+transaction-limits:
+  # Enable transaction limits
+  enabled: false
+
+  # Maximum transaction amount per transfer
+  max-transfer: 10000.00
+
+  # Maximum daily transaction volume per player
+  max-daily-volume: 50000.00
+
+  # Minimum transaction amount
+  min-transaction: 0.01
+
+# Security Settings
+security:
+  # Require confirmation for large transactions
+  require-confirmation: true
+
+  # Amount threshold for confirmation
+  confirmation-threshold: 1000.00
+
+  # Log all transactions to console
+  log-transactions: false
+
+  # Enable transaction cooldowns
+  transaction-cooldown: false
+
+  # Cooldown time in seconds
+  cooldown-seconds: 5
+
+# Performance Settings
 performance:
-  cache-size: 1000
-  cleanup-interval: 3600  # seconds
-  history-retention-days: 90
+  # Cache player accounts in memory
+  cache-accounts: true
+
+  # Cache timeout in minutes
+  cache-timeout: 30
+
+  # Batch database operations
+  batch-operations: true
+
+  # Batch size for operations
+  batch-size: 100
+
+# Integration Settings
+integration:
+  # Enable Vault integration
+  vault-integration: true
+
+  # Enable PlaceholderAPI integration
+  placeholderapi-integration: true
+
+# Messaging Settings
+messages:
+  # Message prefix
+  prefix: "&8[&6Banking&8] "
+
+  # Colors
+  primary-color: "&6"
+  secondary-color: "&e"
+  success-color: "&a"
+  error-color: "&c"
+  info-color: "&b"
+
+  # Custom messages
+  insufficient-funds: "{prefix}{error-color}Insufficient funds! You need {amount} more."
+  payment-sent: "{prefix}{success-color}Successfully sent {amount} to {player}!"
+  payment-received: "{prefix}{success-color}You received {amount} from {player}!"
+  account-created: "{prefix}{info-color}Welcome! A bank account has been created for you."
+  balance-display: "{prefix}{info-color}Your balance: {primary-color}{amount}"
+  transaction-success: "{prefix}{success-color}Transaction completed successfully!"
+  transaction-failed: "{prefix}{error-color}Transaction failed. Please try again."
+  invalid-amount: "{prefix}{error-color}Invalid amount! Please enter a positive number."
+  player-not-found: "{prefix}{error-color}Player not found!"
+  permission-denied: "{prefix}{error-color}You don't have permission to do that!"
+  command-usage: "{prefix}{error-color}Usage: {usage}"
+
+  # Interest messages
+  interest-earned: "{prefix}{success-color}You earned {amount} in interest!"
+  next-interest: "{prefix}{info-color}Next interest payment in {time}."
+
+  # Admin messages
+  admin-balance-set: "{prefix}{success-color}Set {player}'s balance to {amount}."
+  admin-money-given: "{prefix}{success-color}Gave {amount} to {player}."
+  admin-money-taken: "{prefix}{success-color}Took {amount} from {player}."
+  admin-reload: "{prefix}{success-color}Banking plugin reloaded successfully!"
+
+# API Settings
+api:
+  # Enable external API access
+  enabled: true
+
+  # API version
+  version: "1.0"
+
+  # Rate limiting for API calls
+  rate-limit: 100
+
+  # Rate limit window in minutes
+  rate-limit-window: 60
+
+# Business Plugin Integration
+business:
+  # Enable business transaction tracking
+  enabled: true
+
+  # Business transaction fee (percentage)
+  transaction-fee: 0.02
+
+  # Minimum business transaction amount
+  min-transaction: 1.00
+
+  # Maximum business transaction amount
+  max-transaction: 50000.00
+
+# Stock Market Integration
+stock-market:
+  # Enable stock market integration
+  enabled: true
+
+  # Stock transaction fee (percentage)
+  transaction-fee: 0.01
+
+  # Minimum stock transaction amount
+  min-transaction: 10.00
+
+  # Enable dividend tracking
+  dividend-tracking: true
+
+  # Dividend tax rate (percentage)
+  dividend-tax: 0.15
+
+# Banking Features
+features:
+  # Enable savings accounts with higher interest
+  savings-accounts: false
+
+  # Savings account interest rate multiplier
+  savings-multiplier: 1.5
+
+  # Enable loans (future feature)
+  loans: false
+
+  # Enable joint accounts (future feature)
+  joint-accounts: false
+
+  # Enable bank fees
+  bank-fees: false
+
+  # Monthly maintenance fee
+  maintenance-fee: 5.00
+
+# Backup Settings
+backup:
+  # Enable automatic database backups
+  enabled: true
+
+  # Backup interval in hours
+  interval: 24
+
+  # Number of backups to keep
+  keep-backups: 7
+
+  # Backup location (relative to plugin folder)
+  location: "backups/"
+
+# Logging Settings
+logging:
+  # Log level: DEBUG, INFO, WARN, ERROR
+  level: INFO
+
+  # Log transactions to file
+  log-transactions-to-file: true
+
+  # Transaction log file
+  transaction-log-file: "transactions.log"
+
+  # Log admin actions
+  log-admin-actions: true
+
+  # Admin log file
+  admin-log-file: "admin.log"
+
+# Notification Settings
+notifications:
+  # Send notification when receiving money
+  money-received: true
+
+  # Send notification for interest payments
+  interest-payments: true
+
+  # Send notification for low balance
+  low-balance: true
+
+  # Low balance threshold
+  low-balance-threshold: 50.00
+
+  # Send notification for large transactions
+  large-transactions: true
+
+  # Large transaction threshold
+  large-transaction-threshold: 1000.00
+
+# Economy Settings
+economy:
+  # Starting economy size (total money in circulation)
+  starting-economy-size: 100000.00
+
+  # Enable inflation tracking
+  inflation-tracking: false
+
+  # Target inflation rate (percentage per month)
+  target-inflation: 0.02
+
+  # Enable economic events
+  economic-events: false
+
+# Development/Debug Settings
+debug:
+  # Enable debug mode
+  enabled: false
+
+  # Verbose logging
+  verbose: false
+
+  # Debug specific features
+  debug-transactions: false
+  debug-interest: false
+  debug-database: false
+
+  # Performance monitoring
+  performance-monitoring: false

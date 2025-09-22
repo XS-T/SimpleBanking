@@ -68,6 +68,11 @@ repositories {
 		name = "sponge"
 		url = uri("https://repo.spongepowered.org/repository/maven-public/")
 	}
+
+	maven{
+		name = "VaultUnlocked"
+		url = uri("https://repo.codemc.io/repository/creatorfromhell/")
+	}
 }
 
 dependencies {
@@ -81,6 +86,9 @@ dependencies {
 	//MySQL
 	implementation("mysql:mysql-connector-java:8.0.28")
 	implementation("com.zaxxer:HikariCP:7.0.2")
+
+	// Vault
+	compileOnly("net.milkbowl.vault:VaultUnlockedAPI:2.15")
 
 /*
 	// Kotlin

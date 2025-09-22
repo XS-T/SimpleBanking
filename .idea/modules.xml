@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Angels_and_Devils.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Angels_and_Devils.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Angels_and_Devils.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Angels_and_Devils.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Banking.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Banking.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Banking.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Banking.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/CrewCoPlugin-Template-1.17.x-1.21.x.TemplatePlugin1.20.x.main.iml" filepath="$PROJECT_DIR$/.idea/modules/CrewCoPlugin-Template-1.17.x-1.21.x.TemplatePlugin1.20.x.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/CrewCoPlugin-Template-1.17.x-1.21.x.TemplatePlugin1.20.x.test.iml" filepath="$PROJECT_DIR$/.idea/modules/CrewCoPlugin-Template-1.17.x-1.21.x.TemplatePlugin1.20.x.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/CrewCoTemplate.main.iml" filepath="$PROJECT_DIR$/.idea/modules/CrewCoTemplate.main.iml" />
