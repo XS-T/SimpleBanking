@@ -117,9 +117,9 @@ class BankingEconomyProvider(
 				null,
 				withdrawAmount.negate(),
 				TransactionType.WITHDRAWAL,
-				"Vault economy withdrawal",
 				account.balance,
-				newBalance
+				newBalance,
+				"Vault economy withdrawal"
 			)
 			EconomyResponse(amount, newBalance.toDouble(), EconomyResponse.ResponseType.SUCCESS, null)
 		} else {
@@ -157,9 +157,9 @@ class BankingEconomyProvider(
 				null,
 				depositAmount,
 				TransactionType.DEPOSIT,
-				"Vault economy deposit",
 				account.balance,
-				newBalance
+				newBalance,
+				"Vault economy deposit"
 			)
 			EconomyResponse(amount, newBalance.toDouble(), EconomyResponse.ResponseType.SUCCESS, null)
 		} else {

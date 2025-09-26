@@ -44,9 +44,9 @@ class withdrawCommand {
 				null,
 				amount.negate(),
 				TransactionType.WITHDRAWAL,
-				"Cash withdrawal",
 				account.balance,
-				newBalance
+				newBalance,
+				"Cash withdrawal"
 			)
 
 			// Here you would give the player physical money items

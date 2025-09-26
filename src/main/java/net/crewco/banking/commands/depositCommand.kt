@@ -43,9 +43,9 @@ class depositCommand {
 				null,
 				amount,
 				TransactionType.DEPOSIT,
-				"Cash deposit",
 				account.balance,
-				newBalance
+				newBalance,
+				"Cash deposit"
 			)
 			player.sendMessage("${ChatColor.GREEN}Successfully deposited ${accountManager.formatCurrency(amount)}!")
 			player.sendMessage("${ChatColor.GREEN}New balance: ${accountManager.formatCurrency(newBalance)}")

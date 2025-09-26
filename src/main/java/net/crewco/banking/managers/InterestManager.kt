@@ -97,9 +97,9 @@ class InterestManager {
 									null,
 									cappedInterest,
 									TransactionType.INTEREST,
-									"Daily interest payout (${account.interestRate.multiply(BigDecimal("100"))}%)",
 									account.balance,
-									newBalance
+									newBalance,
+									"Daily interest payout (${account.interestRate.multiply(BigDecimal("100"))}%)"
 								)
 
 								// Update last interest payout
@@ -158,9 +158,9 @@ class InterestManager {
 				null,
 				cappedInterest,
 				TransactionType.INTEREST,
-				"Manual interest payout",
 				account.balance,
-				newBalance
+				newBalance,
+				"Manual interest payout"
 			)
 
 			accountManager.updateLastInterestPayout(playerId, LocalDateTime.now())
@@ -279,9 +279,9 @@ class InterestManager {
 							null,
 							cappedInterest,
 							TransactionType.INTEREST,
-							"Manual interest payout (${account.interestRate.multiply(BigDecimal("100"))}%)",
 							account.balance,
-							newBalance
+							newBalance,
+							"Manual interest payout (${account.interestRate.multiply(BigDecimal("100"))}%)"
 						)
 
 						// Update last interest payout

@@ -65,9 +65,9 @@ class bankAdminCommand {
 				null,
 				amount - oldBalance,
 				TransactionType.ADMIN_SET,
-				"Balance set by ${player.name}",
 				oldBalance,
-				amount
+				amount,
+				"Balance set by ${player.name}"
 			)
 
 			player.sendMessage("${ChatColor.GREEN}Set ${targetPlayer.name}'s balance to ${accountManager.formatCurrency(amount)}")
@@ -104,9 +104,9 @@ class bankAdminCommand {
 				null,
 				amount,
 				TransactionType.ADMIN_GIVE,
-				"Money given by ${player.name}",
 				account.balance,
-				newBalance
+				newBalance,
+				"Money given by ${player.name}"
 			)
 
 			player.sendMessage("${ChatColor.GREEN}Gave ${accountManager.formatCurrency(amount)} to ${targetPlayer.name}")
@@ -155,9 +155,9 @@ class bankAdminCommand {
 				null,
 				actualTaken.negate(),
 				TransactionType.ADMIN_TAKE,
-				"Money taken by ${player.name}",
 				account.balance,
-				newBalance
+				newBalance,
+				"Money taken by ${player.name}"
 			)
 
 			player.sendMessage("${ChatColor.GREEN}Took ${accountManager.formatCurrency(actualTaken)} from ${targetPlayer.name}")
