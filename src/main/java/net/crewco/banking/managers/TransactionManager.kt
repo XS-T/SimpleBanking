@@ -19,9 +19,9 @@ class TransactionManager {
 		targetPlayerId: UUID?,
 		amount: BigDecimal,
 		type: TransactionType,
-		description: String,
 		balanceBefore: BigDecimal? = null,
-		balanceAfter: BigDecimal? = null
+		balanceAfter: BigDecimal? = null,
+		description: String = ""
 	): Boolean {
 		val account = databaseManager.loadAccount(playerId) ?: return false
 
@@ -160,10 +160,9 @@ class TransactionManager {
 					playerId,
 					null,
 					amount.negate(),
-					TransactionType.STOCK_PURCHASE,
-					"Purchased $shares shares of $stockSymbol",
-					account.balance,
-					newBalance
+					TransactionType.STOCK_PURCHASE,account.balance,
+					newBalance,
+					"Purchased $shares shares of $stockSymbol"
 				)
 			} else false
 		} else {
@@ -175,9 +174,9 @@ class TransactionManager {
 					null,
 					amount,
 					TransactionType.STOCK_SALE,
-					"Sold $shares shares of $stockSymbol",
 					account.balance,
-					newBalance
+					newBalance,
+					"Sold $shares shares of $stockSymbol"
 				)
 			} else false
 		}
@@ -196,9 +195,9 @@ class TransactionManager {
 				null,
 				amount,
 				TransactionType.DIVIDEND,
-				"Dividend payment from $stockSymbol",
 				account.balance,
-				newBalance
+				newBalance,
+				"Dividend payment from $stockSymbol"
 			)
 		} else false
 	}

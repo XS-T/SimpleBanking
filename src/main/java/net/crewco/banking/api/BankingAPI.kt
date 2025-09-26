@@ -49,6 +49,7 @@ class BankingAPI{
 				null,
 				amount,
 				TransactionType.DEPOSIT,
+				account.balance+amount,account.balance,
 				reason
 			)
 			true
@@ -70,6 +71,7 @@ class BankingAPI{
 				null,
 				amount.negate(),
 				TransactionType.WITHDRAWAL,
+				account.balance+amount,account.balance,
 				reason
 			)
 			true
@@ -79,7 +81,7 @@ class BankingAPI{
 	/**
 	 * Transfer money between players
 	 */
-	fun transfer(from: OfflinePlayer, to: OfflinePlayer, amount: BigDecimal, reason: String = "API Transfer"): Boolean {
+	fun transfer(from: OfflinePlayer, to: OfflinePlayer, amount: BigDecimal, reason: String = "System Transfer"): Boolean {
 		if (amount <= BigDecimal.ZERO) return false
 
 		val fromAccount = accountManager.getAccount(from.uniqueId) ?: return false
@@ -87,12 +89,22 @@ class BankingAPI{
 
 		if (fromAccount.balance < amount) return false
 
-		return transactionManager.transferMoney(
-			fromAccount.playerId,
-			toAccount.playerId,
-			amount,
-			reason
-		)
+		return if (transactionManager.transferMoney(fromAccount.playerId, toAccount.playerId, amount, reason)){
+			// Sender Record
+			transactionManager.recordTransaction(
+				from.uniqueId,
+				to.uniqueId,amount,
+				TransactionType.TRANSFER_SENT,
+				fromAccount.balance+amount,
+				fromAccount.balance)
+			// Receiver Record
+			transactionManager.recordTransaction(
+				to.uniqueId,
+				from.uniqueId,amount,
+				TransactionType.TRANSFER_RECEIVED,
+				toAccount.balance-amount,
+				toAccount.balance)
+		}else false
 	}
 
 	/**
@@ -105,12 +117,13 @@ class BankingAPI{
 		val difference = amount - account.balance
 
 		return if (accountManager.updateBalance(account.playerId, amount)) {
-			val transactionType = if (difference >= BigDecimal.ZERO) TransactionType.DEPOSIT else TransactionType.WITHDRAWAL
 			transactionManager.recordTransaction(
 				account.playerId,
 				null,
 				difference,
-				transactionType,
+				TransactionType.ADMIN_SET,
+				account.balance+amount,
+				account.balance,
 				reason
 			)
 			true
@@ -200,14 +213,29 @@ class BankingAPI{
 		val fromAccount = getAccountByNumber(fromAccountNumber) ?: return false
 		val toAccount = getAccountByNumber(toAccountNumber) ?: return false
 
+		val fromAccountUUID = UUID.fromString(fromAccountNumber)
+		val toAccountUUID = UUID.fromString(toAccountNumber)
+
 		if (fromAccount.balance < amount) return false
 
-		return transactionManager.transferMoney(
-			fromAccount.playerId,
-			toAccount.playerId,
-			amount,
-			reason
-		)
+		return if (transactionManager.transferMoney(fromAccount.playerId, toAccount.playerId, amount, reason)){
+			// Sender Record
+			transactionManager.recordTransaction(
+				fromAccountUUID,
+				toAccountUUID,
+				amount,
+				TransactionType.TRANSFER_SENT,
+				fromAccount.balance+amount,
+				fromAccount.balance)
+			// Receiver Record
+			transactionManager.recordTransaction(
+				toAccountUUID,
+				fromAccountUUID,
+				amount,
+				TransactionType.TRANSFER_RECEIVED,
+				toAccount.balance-amount,
+				toAccount.balance)
+		}else false
 	}
 
 	/**
@@ -230,7 +258,6 @@ class BankingAPI{
 	fun createBusinessAccount(
 		businessOwner: OfflinePlayer,
 		businessName: String,
-		businessType: String,
 		initialDeposit: BigDecimal = BigDecimal.ZERO
 	): Boolean {
 		val businessId = generateBusinessAccountId(businessOwner.uniqueId, businessName)
@@ -241,7 +268,7 @@ class BankingAPI{
 		}
 
 		// Create the business account
-		if (!accountManager.createAccount(businessId, "Business: $businessName")) {
+		if (!accountManager.createAccount(businessId, businessName)) {
 			return false
 		}
 
@@ -266,6 +293,8 @@ class BankingAPI{
 					businessId,
 					initialDeposit.negate(),
 					TransactionType.TRANSFER_SENT,
+					null,
+					null,
 					"Initial deposit to business: $businessName"
 				)
 
@@ -274,6 +303,8 @@ class BankingAPI{
 					businessOwner.uniqueId,
 					initialDeposit,
 					TransactionType.TRANSFER_RECEIVED,
+					null,
+					null,
 					"Initial deposit from owner: ${businessOwner.name}"
 				)
 			}
@@ -313,6 +344,35 @@ class BankingAPI{
 		return businessAccount?.balance ?: BigDecimal.ZERO
 	}
 
+
+	/**
+	 * Set Business Account Balance
+	 * @param businessOwner
+	 * @param businessName
+	 * @return sets account balance of a business
+	 */
+	fun setBusinessCapital(
+		businessOwner: OfflinePlayer,
+		businessName: String,
+		amount: BigDecimal,
+		reason: String = "ADMIN SET Business account to $amount"
+	): Boolean {
+		val businessAccount = getBusinessAccount(businessOwner, businessName) ?: return false
+
+		return if (accountManager.updateBalance(businessAccount.playerId,amount)) {
+			transactionManager.recordTransaction(
+				businessAccount.playerId,
+				null,
+				amount,
+				TransactionType.ADMIN_SET,
+				businessAccount.balance,
+				amount,
+				"$reason ($businessName)"
+			)
+			true
+		} else false
+	}
+
 	/**
 	 * Check if a business account exists
 	 * @param businessOwner The owner of the business
@@ -340,6 +400,7 @@ class BankingAPI{
 				return false
 			}
 		}
+		accountManager.getAccount(businessAccount.playerId)?.isActive =false
 
 		// Note: You'll need to add a deleteAccount method to AccountManager
 		// For now, we can set the account as inactive
@@ -434,6 +495,8 @@ class BankingAPI{
 				null,
 				amount,
 				TransactionType.DEPOSIT,
+				businessAccount.balance+amount,
+				businessAccount.balance,
 				"$reason ($businessName)"
 			)
 			true
@@ -466,6 +529,8 @@ class BankingAPI{
 				null,
 				amount.negate(),
 				TransactionType.WITHDRAWAL,
+				businessAccount.balance+amount,
+				businessAccount.balance,
 				"$reason ($businessName)"
 			)
 			true
