@@ -773,10 +773,10 @@ class BankingAPI{
 	 * @param limit Maximum number of transactions to return
 	 * @return List of business-related transactions
 	 */
-	fun getBusinessTransactions(player: OfflinePlayer, limit: Int = 50): List<BankTransaction> {
-		return transactionManager.getTransactionHistory(player.uniqueId, limit)
+	fun getBusinessTransactions(player: BankAccount, limit: Int = 50): List<BankTransaction> {
+		return transactionManager.getTransactionHistory(player.playerId, limit)
 			.filter { transaction ->
-				transaction.description.contains("business", ignoreCase = true) ||
+				transaction.description.isNotEmpty() ||
 						transaction.type == TransactionType.BUSINESS_PAYMENT
 			}
 	}
